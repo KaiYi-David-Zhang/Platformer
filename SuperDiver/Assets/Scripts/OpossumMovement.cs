@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyMovement : MonoBehaviour
+public class OpossumMovement : MonoBehaviour
 {
     public GameObject leftWP, RightWP;
     public float moveSpeed = 3f;
