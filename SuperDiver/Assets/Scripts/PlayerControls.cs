@@ -22,6 +22,8 @@ public class PlayerControls : MonoBehaviour
     public Vector2 velocity;          // current velocity of the player
     public JumpState jumpState = JumpState.IDLE;
 
+    Vector3 localScale; // for changing direction
+
     Rigidbody2D rb;
     Animator animator;
     SpriteRenderer spriteRenderer;
@@ -31,6 +33,7 @@ public class PlayerControls : MonoBehaviour
 
     void Awake()
     {
+        localScale = transform.localScale;
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
@@ -68,14 +71,18 @@ public class PlayerControls : MonoBehaviour
         if (Input.GetKey(KeyCode.RightArrow))
         {
             isFacingRight = true;
-            spriteRenderer.flipX = !isFacingRight;
+            localScale.x = 1;
+            transform.localScale = localScale;
+            //spriteRenderer.flipX = !isFacingRight;
             rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
             animator.SetBool("isRunning", true);
         }
         else if (Input.GetKey(KeyCode.LeftArrow))
         {
             isFacingRight = false;
-            spriteRenderer.flipX = !isFacingRight;
+            localScale.x = -1;
+            transform.localScale = localScale;
+            //spriteRenderer.flipX = !isFacingRight;
             rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);
             animator.SetBool("isRunning", true);
         }
