@@ -28,7 +28,7 @@ public class PlayerControls : MonoBehaviour
     Animator animator;
     SpriteRenderer spriteRenderer;
     bool isFacingRight = true;
-    bool isGrounded = true;
+    bool isGrounded = false;
     float moveSpeed;
 
     void Awake()
@@ -109,9 +109,6 @@ public class PlayerControls : MonoBehaviour
         if (Input.GetButton("Jump") && isGrounded)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-            jumpState = JumpState.JUMPUP;
-            animator.SetInteger("jumpState", 1);
-            isGrounded = false;
         }
 
         if (Input.GetButtonUp("Jump") && jumpState == JumpState.JUMPUP)
@@ -119,22 +116,36 @@ public class PlayerControls : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, 0f);
         }
 
-        if (rb.velocity.y < 0.001f && jumpState == JumpState.JUMPUP)
-        {
-            jumpState = JumpState.JUMPDOWN;
-            animator.SetInteger("jumpState", 2);
-        }
-        else if (rb.velocity.y > -0.001f && jumpState == JumpState.JUMPDOWN && !isGrounded)
-        {
-            UnityEngine.Debug.Log("player has landed: " + rb.velocity.y);
-            jumpState = JumpState.IDLE;
-            animator.SetInteger("jumpState", 0);
-            isGrounded = true;
-        }
+        jumpState = getCurrentJumpState();
 
-        if (rb.velocity.y > -0.001 && rb.velocity.y < 0 && jumpState == JumpState.JUMPDOWN)
+        animator.SetInteger("jumpState", jumpState - JumpState.IDLE);
+        if (jumpState == JumpState.IDLE)
         {
-            UnityEngine.Debug.Log("It should turn idle: " + rb.velocity.y);
+            isGrounded = true;
+        } else
+        {
+            isGrounded = false;
+        }
+    }
+
+
+    /* 
+     * getCurrentJumpState:
+     *      returns the current jump state based on vertical velocity
+     */
+    JumpState getCurrentJumpState()
+    {
+        float verticalVel = rb.velocity.y;
+        if (verticalVel > 0.001f)
+        {
+            return JumpState.JUMPUP;
+        }
+        else if (rb.velocity.y < -0.001f)
+        {
+            return JumpState.JUMPDOWN;
+        }
+        else {
+            return JumpState.IDLE;
         }
     }
 }
