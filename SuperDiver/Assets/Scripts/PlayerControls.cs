@@ -16,7 +16,7 @@ public class PlayerControls : MonoBehaviour
     public enum JumpState { IDLE, JUMPUP, JUMPDOWN };
 
     public float moveSpeed = 10f;
-    public float jumpForce = 6f;
+    public float jumpForce = 10f;
     public Vector2 velocity;          // current velocity of the player
     public JumpState jumpState = JumpState.IDLE;
 
