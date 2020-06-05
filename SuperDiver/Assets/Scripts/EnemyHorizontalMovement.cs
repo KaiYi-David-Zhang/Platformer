@@ -45,7 +45,9 @@ public class EnemyHorizontalMovement : MonoBehaviour
     // normall the local should be 1 for facing right but the image is facing left to start with
     void moveRight() {
         moveL = false;
-        spriteRenderer.flipX = !moveL;
+        localScale.x = -1;  // since the sprite is facing left initially
+
+        transform.localScale = localScale;
         rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
 
     }
@@ -53,7 +55,8 @@ public class EnemyHorizontalMovement : MonoBehaviour
 
     void moveLeft() {
         moveL = true;
-        spriteRenderer.flipX = !moveL;
+        localScale.x = 1;
+        transform.localScale = localScale;
         rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);
 
     }
