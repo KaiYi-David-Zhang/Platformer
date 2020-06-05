@@ -108,8 +108,9 @@ public class PlayerControls : MonoBehaviour
             jumpState = JumpState.JUMPDOWN;
             animator.SetInteger("jumpState", 2);
         } 
-        else if (rb.velocity.y > -0.001f && jumpState == JumpState.JUMPDOWN)
+        else if (rb.velocity.y > -0.001f && Mathf.Abs(rb.velocity.y) > 0 && jumpState == JumpState.JUMPDOWN)
         {
+            Debug.Log("player has landed: " + rb.velocity.y);
             jumpState = JumpState.IDLE;
             animator.SetInteger("jumpState", 0);
         }
