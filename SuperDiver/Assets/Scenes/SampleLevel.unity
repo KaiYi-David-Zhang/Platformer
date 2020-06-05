@@ -15099,6 +15099,8 @@ GameObject:
   - component: {fileID: 835536407}
   - component: {fileID: 835536410}
   - component: {fileID: 835536411}
+
+  - component: {fileID: 835536412}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -15120,7 +15122,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_GravityScale: 1
   m_Material: {fileID: 0}
   m_Interpolate: 0
@@ -15229,7 +15231,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdfa3eef3542efd46abf7785e3d7e957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 8
+
+  moveSpeed: 10
+  jumpForce: 10
+  velocity: {x: 0, y: 0}
+  jumpState: 0
+--- !u!95 &835536412
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 835536406}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6292e084715a70a408bed174f8e72159, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &869576646
 GameObject:
   m_ObjectHideFlags: 0
