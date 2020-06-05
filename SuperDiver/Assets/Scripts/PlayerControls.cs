@@ -7,6 +7,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Threading;
 using UnityEngine;
@@ -15,8 +16,9 @@ public class PlayerControls : MonoBehaviour
 {
     public enum JumpState { IDLE, JUMPUP, JUMPDOWN };
 
-    public float moveSpeed = 10f;
-    public float jumpForce = 6f;
+    public float groundSpeed = 10f;
+    public float glideSpeed = 6f;
+    public float jumpForce = 10f;
     public Vector2 velocity;          // current velocity of the player
     public JumpState jumpState = JumpState.IDLE;
 
@@ -24,7 +26,8 @@ public class PlayerControls : MonoBehaviour
     Animator animator;
     SpriteRenderer spriteRenderer;
     bool isFacingRight = true;
-
+    bool isGrounded = true;
+    float moveSpeed;
 
     void Awake()
     {
@@ -54,6 +57,14 @@ public class PlayerControls : MonoBehaviour
      */
     void computeLRMovement()
     {
+        if (isGrounded)
+        {
+            moveSpeed = groundSpeed;
+        } else
+        {
+            moveSpeed = glideSpeed;
+        }
+
         if (Input.GetKey(KeyCode.RightArrow))
         {
             isFacingRight = true;
@@ -88,14 +99,12 @@ public class PlayerControls : MonoBehaviour
      */
     void computeJump()
     {
-        if (Input.GetButtonDown("Jump") && jumpState == JumpState.IDLE)
+        if (Input.GetButton("Jump") && isGrounded)
         {
-            if (jumpState == JumpState.IDLE)
-            {
-                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-                jumpState = JumpState.JUMPUP;
-                animator.SetInteger("jumpState", 1);
-            }
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            jumpState = JumpState.JUMPUP;
+            animator.SetInteger("jumpState", 1);
+            isGrounded = false;
         }
 
         if (Input.GetButtonUp("Jump") && jumpState == JumpState.JUMPUP)
@@ -107,12 +116,18 @@ public class PlayerControls : MonoBehaviour
         {
             jumpState = JumpState.JUMPDOWN;
             animator.SetInteger("jumpState", 2);
-        } 
-        else if (rb.velocity.y > -0.001f && Mathf.Abs(rb.velocity.y) > 0 && jumpState == JumpState.JUMPDOWN)
+        }
+        else if (rb.velocity.y > -0.001f && jumpState == JumpState.JUMPDOWN && !isGrounded)
         {
-            Debug.Log("player has landed: " + rb.velocity.y);
+            UnityEngine.Debug.Log("player has landed: " + rb.velocity.y);
             jumpState = JumpState.IDLE;
             animator.SetInteger("jumpState", 0);
+            isGrounded = true;
+        }
+
+        if (rb.velocity.y > -0.001 && rb.velocity.y < 0 && jumpState == JumpState.JUMPDOWN)
+        {
+            UnityEngine.Debug.Log("It should turn idle: " + rb.velocity.y);
         }
     }
 }
