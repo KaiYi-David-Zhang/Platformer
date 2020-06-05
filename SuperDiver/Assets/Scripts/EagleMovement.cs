@@ -2,60 +2,62 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class OpossumMovement : MonoBehaviour
+public class EagleMovement : MonoBehaviour
 {
-    public float leftDis, rightDis;
-    public float moveSpeed = 3f;
+    public float leftDis, RightDis;
     float startingPos;
+    public float moveSpeed = 3f;
     Vector3 localScale;
     bool moveL = true;
     Rigidbody2D rb;
-
-
     // Start is called before the first frame update
     void Start()
     {
         localScale = transform.localScale;
-        rb = GetComponent<Rigidbody2D> ();
+        rb = GetComponent<Rigidbody2D>();
         startingPos = transform.position.x;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(transform.position.x > startingPos + rightDis)
+        if (transform.position.x > startingPos + RightDis)
         {
             moveL = true;
         }
-        if(transform.position.x < startingPos - leftDis) {
+        if (transform.position.x < startingPos - leftDis)
+        {
             moveL = false;
         }
 
-        if (moveL) {
+        if (moveL)
+        {
             moveLeft();
         }
-        else {
+        else
+        {
             moveRight();
         }
-
     }
 
-    // normall the local should be 1 for facing right but the image is facing left to start with
-    void moveRight() {
+    void moveRight()
+    {
         moveL = false;
         localScale.x = 1;
-        rb.velocity = new Vector2(localScale.x * moveSpeed, rb.velocity.y);
+        rb.velocity = new Vector2(localScale.x * moveSpeed, 0);
         localScale.x = -1;  // here is the change since the picture is facing left
         transform.localScale = localScale;
 
     }
 
 
-    void moveLeft() {
+    void moveLeft()
+    {
         moveL = true;
         localScale.x = -1;
-        rb.velocity = new Vector2(localScale.x * moveSpeed, rb.velocity.y);
+        rb.velocity = new Vector2(localScale.x * moveSpeed, 0);
         localScale.x = 1;
         transform.localScale = localScale;
     }
+
 }
