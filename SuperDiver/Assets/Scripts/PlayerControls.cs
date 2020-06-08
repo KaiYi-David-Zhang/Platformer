@@ -1,8 +1,7 @@
 ﻿/* 
  * Player Controls Script
  * 
- * This script handles the player character interaction based on user input and
- * unit collision.
+ * This script handles the player character interaction based on user input
  */
 
 using System.Collections;
@@ -14,22 +13,25 @@ using UnityEngine;
 
 public class PlayerControls : MonoBehaviour
 {
+    // enum class for the aerial state
     public enum JumpState { IDLE, JUMPUP, JUMPDOWN };
 
+    // public variables
     public float groundSpeed = 10f;
     public float glideSpeed = 6f;
     public float jumpForce = 10f;
     public Vector2 velocity;          // current velocity of the player
     public JumpState jumpState = JumpState.IDLE;
 
+    // private variables
     Vector3 localScale; // for changing direction
-
     Rigidbody2D rb;
     Animator animator;
     SpriteRenderer spriteRenderer;
     bool isFacingRight = true;
     bool isGrounded = false;
     float moveSpeed;
+    bool controlEnabled = true;
 
     void Awake()
     {
@@ -48,8 +50,11 @@ public class PlayerControls : MonoBehaviour
     // Update is called every frame
     void Update()
     {
-        computeLRMovement();
-        computeJump();
+        if (controlEnabled)
+        {
+            computeLRMovement();
+            computeJump();
+        }
         velocity = rb.velocity; // displays current velocity of player on unity
     }
 
