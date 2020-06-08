@@ -22,6 +22,8 @@ public class PlayerControls : MonoBehaviour
     public float jumpForce = 10f;
     public Vector2 velocity;          // current velocity of the player
     public JumpState jumpState = JumpState.IDLE;
+    public int maxHealth = 1;
+    public GameObject spawnPoint;
 
     // private variables
     Vector3 localScale; // for changing direction
@@ -31,10 +33,16 @@ public class PlayerControls : MonoBehaviour
     bool isFacingRight = true;
     bool isGrounded = false;
     float moveSpeed;
+    bool isAlive = true;
     bool controlEnabled = true;
+    int currHealth;
 
+
+
+    // Unity engine basic functions
     void Awake()
     {
+        currHealth = maxHealth;
         localScale = transform.localScale;
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -56,8 +64,12 @@ public class PlayerControls : MonoBehaviour
             computeJump();
         }
         velocity = rb.velocity; // displays current velocity of player on unity
+        testTeleport();
     }
 
+
+
+    // movement related methods
 
     /* 
      * computeLRMovement:
@@ -104,7 +116,6 @@ public class PlayerControls : MonoBehaviour
         }
     }
 
-
     /*
      * computeJump:
      *      takes user key input and computes jump movement
@@ -133,7 +144,6 @@ public class PlayerControls : MonoBehaviour
         }
     }
 
-
     /* 
      * getCurrentJumpState:
      *      returns the current jump state based on vertical velocity
@@ -153,4 +163,49 @@ public class PlayerControls : MonoBehaviour
             return JumpState.IDLE;
         }
     }
+
+    void teleport(Vector3 position)
+    {
+        rb.position = position;
+        rb.velocity *= 0;
+    }
+
+    void testTeleport()
+    {
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            teleport(spawnPoint.transform.position);
+        }
+    }
+
+
+    
+    // health related methods
+    public void decrementHealth()
+    {
+        currHealth--;
+    }
+
+    public void die()
+    {
+        controlEnabled = false;
+        while (currHealth > 0)
+        {
+            decrementHealth();
+        }
+        playerDeath();
+    }
+
+    void playerDeath()
+    {
+        Invoke("respawn", 0.75f);
+    }
+
+    void respawn()
+    {
+        currHealth = maxHealth;
+        teleport(spawnPoint.transform.position);
+        controlEnabled = true;
+    }
+
 }
