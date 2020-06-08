@@ -25,6 +25,7 @@ public class PlayerControls : MonoBehaviour
     public JumpState jumpState = JumpState.IDLE;
     public int maxHealth = 1;
     public GameObject spawnPoint;
+    public Cinemachine.CinemachineVirtualCamera vcam;
 
     // private variables
     Vector3 localScale; // for changing direction
@@ -180,7 +181,10 @@ public class PlayerControls : MonoBehaviour
         }
     }
 
-
+    /* 
+     * teleport:
+     *      teleports the player to a specific position on the map
+     */
     void teleport(Vector3 position)
     {
         rb.position = position;
@@ -198,11 +202,20 @@ public class PlayerControls : MonoBehaviour
 
     
     // health related methods
+    /*
+     * decrementHealth:
+     *      decrements the player health by 1
+     */
     public void decrementHealth()
     {
         currHealth--;
     }
 
+    /* 
+     * die:
+     *      decrements the player's health until it reaches 0
+     *      then procs playerDeath method
+     */
     public void die()
     {
         controlEnabled = false;
@@ -213,15 +226,28 @@ public class PlayerControls : MonoBehaviour
         playerDeath();
     }
 
+    /*
+     * playerDeath:
+     *      called after a player's health reaches 0; player's behaviour
+     *      after death and before respawn.
+     */
     void playerDeath()
     {
+        vcam.m_LookAt = null;
+        vcam.m_Follow = null;
         Invoke("respawn", 0.75f);
     }
 
+    /*
+     * respawn:
+     *      resets the character to spawn and teleports him back to spawn point
+     */
     void respawn()
     {
         currHealth = maxHealth;
         teleport(spawnPoint.transform.position);
+        vcam.m_LookAt = transform;
+        vcam.m_Follow = transform;
         controlEnabled = true;
     }
 
