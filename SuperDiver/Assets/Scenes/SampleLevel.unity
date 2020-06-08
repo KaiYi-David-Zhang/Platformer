@@ -17696,6 +17696,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: eagle1
       objectReference: {fileID: 0}
+    - target: {fileID: 4215110292877367154, guid: eb122349a43b24a4c883233f47120227,
+        type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
     - target: {fileID: 4215110294507622807, guid: eb122349a43b24a4c883233f47120227,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -17849,6 +17854,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: opossum1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6351717910760003320, guid: ce210eff6c430dd45813eb5b62889251,
+        type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ce210eff6c430dd45813eb5b62889251, type: 3}

@@ -29,6 +29,7 @@ public class PlayerControls : MonoBehaviour
     SpriteRenderer spriteRenderer;
     bool isFacingRight = true;
     bool isGrounded = false;
+    bool isInControl = true;    // determinds if the player can have left and right movement 
     float moveSpeed;
 
     void Awake()
@@ -68,6 +69,10 @@ public class PlayerControls : MonoBehaviour
             moveSpeed = glideSpeed;
         }
 
+        if (!isInControl)
+        {
+            return;
+        }
         if (Input.GetKey(KeyCode.RightArrow))
         {
             isFacingRight = true;
@@ -121,7 +126,17 @@ public class PlayerControls : MonoBehaviour
         animator.SetInteger("jumpState", jumpState - JumpState.IDLE);
         if (jumpState == JumpState.IDLE)
         {
+            if (!isInControl)
+            {
+                isInControl = true; // player regains control when landed
+                gameObject.layer = 8;   // change back to the player layer so it can be hit again
+                rb.velocity = new Vector2(0, rb.velocity.y);    // resets velocity
+                animator.SetBool("isRunning", false);   // resets animation
+
+            }
+
             isGrounded = true;
+
         } else
         {
             isGrounded = false;
@@ -146,6 +161,20 @@ public class PlayerControls : MonoBehaviour
         }
         else {
             return JumpState.IDLE;
+        }
+    }
+
+
+    // unity function that runs everytime a collision happends
+    // used for collsion check for enemy
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "Enemy" && isInControl == true)
+        {
+            rb.velocity = new Vector2(-20, 20);
+            isInControl = false;
+            gameObject.layer = 10;  // change to unHitable layer to avoid repeated damage
+
         }
     }
 }
