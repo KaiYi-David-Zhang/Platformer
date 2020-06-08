@@ -20,6 +20,7 @@ public class PlayerControls : MonoBehaviour
     public float groundSpeed = 10f;
     public float glideSpeed = 6f;
     public float jumpForce = 10f;
+    public float hurtVelocity = 4f;
     public Vector2 velocity;          // current velocity of the player
     public JumpState jumpState = JumpState.IDLE;
     public int maxHealth = 1;
@@ -32,10 +33,10 @@ public class PlayerControls : MonoBehaviour
     SpriteRenderer spriteRenderer;
     bool isFacingRight = true;
     bool isGrounded = false;
-    bool isInControl = true;    // determinds if the player can have left and right movement 
+    bool isInControl = true;    // determinds if the player can have left and right movement used during interaction with enemies
     float moveSpeed;
     bool isAlive = true;
-    bool controlEnabled = true;
+    bool controlEnabled = true; // determinds if the player have controls at all used during death and respawns
     int currHealth;
 
 
@@ -223,5 +224,34 @@ public class PlayerControls : MonoBehaviour
         teleport(spawnPoint.transform.position);
         controlEnabled = true;
     }
+
+    // unity function that runs everytime a collision happends
+    // used for collsion check for enemy
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "Enemy" && isInControl == true)
+        {
+            // When an Enemy hits the player
+
+
+            if (gameObject.transform.position.x < col.gameObject.transform.position.x)
+            {
+                // player is to the left of enemy   
+                rb.velocity = new Vector2(-hurtVelocity, hurtVelocity/2);
+
+            }
+            else
+            {
+                // player is to the right of enemy
+                rb.velocity = new Vector2(hurtVelocity, hurtVelocity/2);
+
+            }
+
+            isInControl = false;
+            gameObject.layer = 10;  // change to unHitable layer to avoid repeated damage
+
+        }
+    }
+
 
 }
