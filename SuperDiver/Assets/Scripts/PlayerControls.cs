@@ -171,7 +171,22 @@ public class PlayerControls : MonoBehaviour
     {
         if (col.gameObject.tag == "Enemy" && isInControl == true)
         {
-            rb.velocity = new Vector2(-20, 20);
+            // When an Enemy hits the player
+
+
+            if(gameObject.transform.position.x < col.gameObject.transform.position.x)   
+            {
+                // player is to the left of enemy   
+                rb.velocity = new Vector2(-4, 2);
+
+            }
+            else
+            {
+                // player is to the right of enemy
+                rb.velocity = new Vector2(4, 2);
+
+            }
+
             isInControl = false;
             gameObject.layer = 10;  // change to unHitable layer to avoid repeated damage
 

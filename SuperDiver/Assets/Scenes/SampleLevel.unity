@@ -17843,12 +17843,12 @@ PrefabInstance:
     - target: {fileID: 6351717910760003317, guid: ce210eff6c430dd45813eb5b62889251,
         type: 3}
       propertyPath: leftDis
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6351717910760003317, guid: ce210eff6c430dd45813eb5b62889251,
         type: 3}
       propertyPath: rightDis
-      value: 5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6351717910760003320, guid: ce210eff6c430dd45813eb5b62889251,
         type: 3}
