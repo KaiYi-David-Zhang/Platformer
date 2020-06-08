@@ -16313,7 +16313,7 @@ GameObject:
   - component: {fileID: 573178254}
   - component: {fileID: 573178256}
   m_Layer: 0
-  m_Name: CM vcam1
+  m_Name: VirtualCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16648,6 +16648,7 @@ MonoBehaviour:
   jumpState: 0
   maxHealth: 1
   spawnPoint: {fileID: 722436560}
+  vcam: {fileID: 573178254}
 --- !u!95 &835536412
 Animator:
   serializedVersion: 3
@@ -17035,7 +17036,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -12.697605, y: -0.10391426}
+  m_Offset: {x: -10.910828, y: -0.10391426}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -17046,7 +17047,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 71.90089, y: 3.4542732}
+  m_Size: {x: 96.36612, y: 3.4542732}
   m_EdgeRadius: 0
 --- !u!4 &1400351233
 Transform:
