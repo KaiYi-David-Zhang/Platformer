@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/* This script is left alive just in case we need to separate movement and health
+ * This script is not called anywhere
+ */
+
 public class PlayerHealth : MonoBehaviour
 {
     //public variables
