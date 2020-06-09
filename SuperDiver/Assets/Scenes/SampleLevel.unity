@@ -16647,10 +16647,12 @@ MonoBehaviour:
   hurtVelocity: 5.56
   velocity: {x: 0, y: 0}
   jumpState: 0
-  maxHealth: 1
+  maxHealth: 3
   spawnPoint: {fileID: 722436560}
   vcam: {fileID: 573178254}
   collider2D: {fileID: 835536410}
+  hitStunTime: 0.5
+  iframesTime: 1
 --- !u!95 &835536412
 Animator:
   serializedVersion: 3
@@ -19365,6 +19367,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TagString
       value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 4215110292877367154, guid: eb122349a43b24a4c883233f47120227,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4215110294507622807, guid: eb122349a43b24a4c883233f47120227,
         type: 3}
