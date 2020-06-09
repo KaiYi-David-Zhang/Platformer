@@ -257,24 +257,34 @@ public class PlayerControls : MonoBehaviour
     {
         if (col.gameObject.tag == "Enemy" && isInControl == true)
         {
-            // When an Enemy hits the player
+            // When player jumps on the enemy
 
-
-            if (gameObject.transform.position.x < col.gameObject.transform.position.x)
+            if(jumpState == JumpState.JUMPDOWN && transform.position.y > col.gameObject.transform.position.y)
             {
-                // player is to the left of enemy   
-                rb.velocity = new Vector2(-hurtVelocity, hurtVelocity/2);
-
+                Enemy enemy = col.gameObject.GetComponent<Enemy>();
+                enemy.ReceivedHit();
+                // TODO: Add jump here
             }
             else
-            {
-                // player is to the right of enemy
-                rb.velocity = new Vector2(hurtVelocity, hurtVelocity/2);
+            {// when player gets hit
+                if (gameObject.transform.position.x < col.gameObject.transform.position.x)
+                {
+                    // player is to the left of enemy   
+                    rb.velocity = new Vector2(-hurtVelocity, hurtVelocity / 2);
 
+                }
+                else
+                {
+                    // player is to the right of enemy
+                    rb.velocity = new Vector2(hurtVelocity, hurtVelocity / 2);
+
+                }
+
+                isInControl = false;
+                gameObject.layer = 10;  // change to unHitable layer to avoid repeated damage
             }
 
-            isInControl = false;
-            gameObject.layer = 10;  // change to unHitable layer to avoid repeated damage
+
 
         }
     }
