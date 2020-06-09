@@ -10,15 +10,13 @@ public class EnemyHorizontalMovement : Enemy
     Vector3 localScale;
     SpriteRenderer spriteRenderer;
     bool moveL = true;
-    Rigidbody2D rb;
 
 
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
         base.Start();
         localScale = transform.localScale;
-        rb = GetComponent<Rigidbody2D> ();
         spriteRenderer = GetComponent<SpriteRenderer>();
         startingPos = transform.position.x;
     }
