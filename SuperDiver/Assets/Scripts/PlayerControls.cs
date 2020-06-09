@@ -284,7 +284,9 @@ public class PlayerControls : MonoBehaviour
     {
         if (col.gameObject.tag == "Enemy")
         {
-            if (jumpState == JumpState.JUMPDOWN && transform.position.y > col.gameObject.transform.position.y)
+            // When player jumps on the enemy
+
+            if(jumpState == JumpState.JUMPDOWN && transform.position.y > col.gameObject.transform.position.y)
             {
                 Enemy enemy = col.gameObject.GetComponent<Enemy>();
                 enemy.ReceivedHit();
