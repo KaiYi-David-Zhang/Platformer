@@ -284,14 +284,23 @@ public class PlayerControls : MonoBehaviour
     {
         if (col.gameObject.tag == "Enemy")
         {
-            // When an Enemy hits the player
-            //UnityEngine.Debug.Log("Enemy collided with player");
-
-            playerHurt(col);
-            if (isAlive)
+            if(jumpState == JumpState.JUMPDOWN && transform.position.y > col.gameObject.transform.position.y)
             {
-                Invoke("exitHurt", hitStunTime);
-                Invoke("makeHitable", iframesTime);
+                Enemy enemy = col.gameObject.GetComponent<Enemy>();
+                enemy.ReceivedHit();
+                // TODO: Add jump here
+            }
+            else 
+            {
+                // When an Enemy hits the player
+                //UnityEngine.Debug.Log("Enemy collided with player");
+
+                playerHurt(col);
+                if (isAlive)
+                {
+                    Invoke("exitHurt", hitStunTime);
+                    Invoke("makeHitable", iframesTime);
+                }
             }
         }
     }
