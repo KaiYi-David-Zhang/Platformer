@@ -16645,14 +16645,15 @@ MonoBehaviour:
   glideSpeed: 6
   jumpForce: 12
   hurtVelocity: 5.56
-  velocity: {x: 0, y: 0}
+  bounceVelocity: 6
   jumpState: 0
   maxHealth: 3
+  hitStunTime: 0.5
+  iframesTime: 1
+  velocity: {x: 0, y: 0}
   spawnPoint: {fileID: 722436560}
   vcam: {fileID: 573178254}
   collider2D: {fileID: 835536410}
-  hitStunTime: 0.5
-  iframesTime: 1
 --- !u!95 &835536412
 Animator:
   serializedVersion: 3

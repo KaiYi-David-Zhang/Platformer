@@ -23,18 +23,23 @@ public class PlayerControls : MonoBehaviour
     const int LOCALSCALE_LEFT = -1;
 
     // public variables
-    public float groundSpeed = 10f;
+    public float groundSpeed = 6f;
     public float glideSpeed = 6f;
-    public float jumpForce = 10f;
+    public float jumpForce = 12f;
     public float hurtVelocity = 4f;
-    public Vector2 velocity;          // current velocity of the player
+    public float bounceVelocity = 6f;
+
     public JumpState jumpState = JumpState.IDLE;
     public int maxHealth = 1;
+    public float hitStunTime = 0.5f;
+    public float iframesTime = 1.0f;
+
+    public Vector2 velocity;          // current velocity of the player
+    
     public GameObject spawnPoint;
     public Cinemachine.CinemachineVirtualCamera vcam;
     public Collider2D collider2D;
-    public float hitStunTime = 0.5f;
-    public float iframesTime = 1.0f;
+    
 
     // private variables
     Vector3 localScale; // for changing direction
@@ -52,6 +57,7 @@ public class PlayerControls : MonoBehaviour
 
 
     // Unity engine basic functions
+    // Awake is called when the script is loaded, regardless of it being enabled or not
     void Awake()
     {
         currHealth = maxHealth;
@@ -76,7 +82,7 @@ public class PlayerControls : MonoBehaviour
             computeLRMovement();
             computeJump();
         }
-        
+
         velocity = rb.velocity; // displays current velocity of player on unity
         //testTeleport();
 
@@ -85,6 +91,58 @@ public class PlayerControls : MonoBehaviour
         {
             playerDeath();
         }
+    }
+
+    // unity function that runs everytime a collision happends
+    // used for collsion check for enemy
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "Enemy")
+        {
+            // When player jumps on the enemy
+
+            if (jumpState == JumpState.JUMPDOWN && transform.position.y > col.gameObject.transform.position.y)
+            {
+                Enemy enemy = col.gameObject.GetComponent<Enemy>();
+                enemy.ReceivedHit();
+                bounce(bounceVelocity);
+                // TODO: Add jump here
+            }
+            else
+            {
+                // When an Enemy hits the player
+                //UnityEngine.Debug.Log("Enemy collided with player");
+
+                playerHurt(col);
+                if (isAlive)
+                {
+                    Invoke("exitHurt", hitStunTime);
+                    Invoke("makeHitable", iframesTime);
+                }
+            }
+        }
+    }
+
+
+
+    // helper functions
+    /*
+     * giveControl:
+     *      player regains control over their character.
+     *      Implemented so that it can be "invoked"
+     */
+    void giveControl()
+    {
+        controlEnabled = true;
+    }
+
+    /*
+     * makeHitable:
+     *      player's layer is set back to player layer, and becomes hitable again
+     */
+    void makeHitable()
+    {
+        gameObject.layer = PLAYER_LAYER;
     }
 
 
@@ -206,17 +264,16 @@ public class PlayerControls : MonoBehaviour
         rb.velocity *= 0;
     }
 
-    void testTeleport()
+    void bounce(float bounceVelocity)
     {
-        if (Input.GetKey(KeyCode.DownArrow))
-        {
-            teleport(spawnPoint.transform.position);
-        }
+        rb.velocity = new Vector2(rb.velocity.x, bounceVelocity);
     }
 
 
     
     // health related methods
+
+
     /*
      * decrementHealth:
      *      decrements the player health by 1
@@ -278,35 +335,6 @@ public class PlayerControls : MonoBehaviour
         makeHitable();                         // reset to player layer
     }
 
-    // unity function that runs everytime a collision happends
-    // used for collsion check for enemy
-    void OnCollisionEnter2D(Collision2D col)
-    {
-        if (col.gameObject.tag == "Enemy")
-        {
-            // When player jumps on the enemy
-
-            if(jumpState == JumpState.JUMPDOWN && transform.position.y > col.gameObject.transform.position.y)
-            {
-                Enemy enemy = col.gameObject.GetComponent<Enemy>();
-                enemy.ReceivedHit();
-                // TODO: Add jump here
-            }
-            else 
-            {
-                // When an Enemy hits the player
-                //UnityEngine.Debug.Log("Enemy collided with player");
-
-                playerHurt(col);
-                if (isAlive)
-                {
-                    Invoke("exitHurt", hitStunTime);
-                    Invoke("makeHitable", iframesTime);
-                }
-            }
-        }
-    }
-
     /*
      * playerHurt:
      *      enter player hurt animation, disable control for a set time, and
@@ -333,24 +361,19 @@ public class PlayerControls : MonoBehaviour
         decrementHealth();
     }
 
+    /*
+     * exitHurt:
+     *      exit out of the hurt state:
+     *          reset the animator
+     *          reset the velocity
+     *          regain control
+     */
     void exitHurt()
     {
-        controlEnabled = true;
-        animator.SetBool("isHurt", false);
-        animator.SetBool("isRunning", false);
+        controlEnabled = true; 
+        animator.SetBool("isHurt", false);              // resets animation
+        animator.SetBool("isRunning", false);           // resets animation
         
         rb.velocity = new Vector2(0, rb.velocity.y);    // resets velocity
     }
-
-    void giveControl()
-    {
-        controlEnabled = true;
-    }
-
-    void makeHitable()
-    {
-        gameObject.layer = PLAYER_LAYER;
-    }
-
-
 }
