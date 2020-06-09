@@ -16650,6 +16650,7 @@ MonoBehaviour:
   maxHealth: 1
   spawnPoint: {fileID: 722436560}
   vcam: {fileID: 573178254}
+  collider2D: {fileID: 835536410}
 --- !u!95 &835536412
 Animator:
   serializedVersion: 3

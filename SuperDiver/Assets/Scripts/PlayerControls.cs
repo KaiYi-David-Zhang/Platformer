@@ -26,6 +26,7 @@ public class PlayerControls : MonoBehaviour
     public int maxHealth = 1;
     public GameObject spawnPoint;
     public Cinemachine.CinemachineVirtualCamera vcam;
+    public Collider2D collider2D;
 
     // private variables
     Vector3 localScale; // for changing direction
@@ -34,7 +35,7 @@ public class PlayerControls : MonoBehaviour
     SpriteRenderer spriteRenderer;
     bool isFacingRight = true;
     bool isGrounded = false;
-    bool isInControl = true;    // determinds if the player can have left and right movement used during interaction with enemies
+    public bool isInControl = true;    // determinds if the player can have left and right movement used during interaction with enemies
     float moveSpeed;
     bool isAlive = true;
     bool controlEnabled = true; // determinds if the player have controls at all used during death and respawns
@@ -50,6 +51,7 @@ public class PlayerControls : MonoBehaviour
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
+        collider2D = GetComponent<Collider2D>();
     }
 
     // Start is called before the first frame update
@@ -61,13 +63,15 @@ public class PlayerControls : MonoBehaviour
     // Update is called every frame
     void Update()
     {
-        if (controlEnabled)
-        {
-            computeLRMovement();
-            computeJump();
-        }
+        computeLRMovement();
+        computeJump();
         velocity = rb.velocity; // displays current velocity of player on unity
-        testTeleport();
+        //testTeleport();
+
+        if (!isAlive)
+        {
+            playerDeath();
+        }
     }
 
 
@@ -80,6 +84,11 @@ public class PlayerControls : MonoBehaviour
      */
     void computeLRMovement()
     {
+        if (!controlEnabled)
+        {
+            return;
+        }
+
         if (isGrounded)
         {
             moveSpeed = groundSpeed;
@@ -88,10 +97,6 @@ public class PlayerControls : MonoBehaviour
             moveSpeed = glideSpeed;
         }
 
-        if (!isInControl)
-        {
-            return;
-        }
         if (Input.GetKey(KeyCode.RightArrow))
         {
             isFacingRight = true;
@@ -144,18 +149,19 @@ public class PlayerControls : MonoBehaviour
         animator.SetInteger("jumpState", jumpState - JumpState.IDLE);
         if (jumpState == JumpState.IDLE)
         {
-            if (!isInControl)
+            if (!controlEnabled)
             {
-                isInControl = true; // player regains control when landed
+                controlEnabled = true; // player regains control when landed
                 gameObject.layer = 8;   // change back to the player layer so it can be hit again
                 rb.velocity = new Vector2(0, rb.velocity.y);    // resets velocity
                 animator.SetBool("isRunning", false);   // resets animation
-
+                animator.SetBool("isHurt", false);
             }
 
             isGrounded = true;
 
-        } else
+        } 
+        else
         {
             isGrounded = false;
         }
@@ -177,6 +183,7 @@ public class PlayerControls : MonoBehaviour
             return JumpState.JUMPDOWN;
         }
         else {
+            UnityEngine.Debug.Log("Character is Idle");
             return JumpState.IDLE;
         }
     }
@@ -209,6 +216,10 @@ public class PlayerControls : MonoBehaviour
     public void decrementHealth()
     {
         currHealth--;
+        if (currHealth == 0)
+        {
+            isAlive = false;
+        }
     }
 
     /* 
@@ -223,7 +234,6 @@ public class PlayerControls : MonoBehaviour
         {
             decrementHealth();
         }
-        playerDeath();
     }
 
     /*
@@ -235,6 +245,7 @@ public class PlayerControls : MonoBehaviour
     {
         vcam.m_LookAt = null;
         vcam.m_Follow = null;
+        isAlive = true;
         Invoke("respawn", 0.75f);
     }
 
@@ -248,7 +259,10 @@ public class PlayerControls : MonoBehaviour
         teleport(spawnPoint.transform.position);
         vcam.m_LookAt = transform;
         vcam.m_Follow = transform;
+        animator.SetBool("isRunning", false);  // reset the animation
+        animator.SetBool("isHurt", false);     // reset the animation
         controlEnabled = true;
+        gameObject.layer = 8;                  // reset to player layer
     }
 
     // unity function that runs everytime a collision happends
@@ -258,24 +272,24 @@ public class PlayerControls : MonoBehaviour
         if (col.gameObject.tag == "Enemy" && isInControl == true)
         {
             // When an Enemy hits the player
-
+            //UnityEngine.Debug.Log("Enemy collided with player");
 
             if (gameObject.transform.position.x < col.gameObject.transform.position.x)
             {
                 // player is to the left of enemy   
-                rb.velocity = new Vector2(-hurtVelocity, hurtVelocity/2);
+                rb.velocity = new Vector2(-hurtVelocity, hurtVelocity);
 
             }
             else
             {
                 // player is to the right of enemy
-                rb.velocity = new Vector2(hurtVelocity, hurtVelocity/2);
+                rb.velocity = new Vector2(hurtVelocity, hurtVelocity);
 
             }
 
-            isInControl = false;
+            animator.SetBool("isHurt", true);
+            controlEnabled = false;
             gameObject.layer = 10;  // change to unHitable layer to avoid repeated damage
-
         }
     }
 
