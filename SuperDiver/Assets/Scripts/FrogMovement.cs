@@ -7,7 +7,6 @@ public class FrogMovement : Enemy
     public float jumpTime = 4f;
     float jumpTimer = 0f; // in seconds
     public float jumpForce = 6f;
-    Rigidbody2D rb;
     Vector3 localScale;
 
     // Start is called before the first frame update
@@ -15,7 +14,6 @@ public class FrogMovement : Enemy
     {
         base.Start();
         localScale = transform.localScale;
-        rb = GetComponent<Rigidbody2D>();
         jumpTimer = jumpTime;
     }
 
