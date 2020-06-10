@@ -16646,10 +16646,11 @@ MonoBehaviour:
   jumpForce: 12
   hurtVelocity: 5.56
   bounceVelocity: 6
+  blinkCycles: 0.1
   jumpState: 0
-  maxHealth: 2
+  maxHealth: 3
   hitStunTime: 0.5
-  iframesTime: 1
+  iframesTime: 1.5
   velocity: {x: 0, y: 0}
   spawnPoint: {fileID: 722436560}
   vcam: {fileID: 573178254}

@@ -14,7 +14,17 @@ using UnityEngine;
 
 public class PlayerControls : MonoBehaviour
 {
-    // enum class for the aerial state
+    /*
+     * JumpState:
+     *      enum class to denote character's aerial state:
+     *          -IDLE: the character is on the ground
+     *          -JUMPUP: the character is jumping upwards while on ground
+     *          -INFLIGHT: character is in the air in an upwards motion
+     *                     prevents character from getting stuck on JUMPUP
+     *                     animation when the velocity changes quickly to 0
+     *                     from a positive value
+     *          -JUMPDOWN: character is in a downwards motion while in the air
+     */
     public enum JumpState { IDLE, JUMPUP, INFLIGHT, JUMPDOWN };
 
     // useful constants
@@ -29,6 +39,7 @@ public class PlayerControls : MonoBehaviour
     public float jumpForce = 12f;
     public float hurtVelocity = 4f;
     public float bounceVelocity = 6f;
+    public float blinkCycles = 0.1f;
 
     public JumpState jumpState = JumpState.IDLE;
     public int maxHealth = 1;
@@ -47,13 +58,19 @@ public class PlayerControls : MonoBehaviour
     Rigidbody2D rb;
     Animator animator;
     SpriteRenderer spriteRenderer;
+
     bool isFacingRight = true;
     bool isGrounded = false;
-    //bool isInControl = true;    // determinds if the player can have left and right movement used during interaction with enemies
-    float moveSpeed;
     bool isAlive = true;
-    bool controlEnabled = true; // determinds if the player have controls at all used during death and respawns
+    bool controlEnabled = true; // determines if the player have controls at all
+                                // used during death and respawns
+    //bool isInControl = true;  // determines if the player can have left and right movement
+                                //used during interaction with enemies
+
     int currHealth;
+
+    float moveSpeed;
+    float blinkTimer;
 
 
 
@@ -61,8 +78,7 @@ public class PlayerControls : MonoBehaviour
     // Awake is called when the script is loaded, regardless of it being enabled or not
     void Awake()
     {
-        currHealth = maxHealth;
-        localScale = transform.localScale;
+        
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
@@ -73,26 +89,32 @@ public class PlayerControls : MonoBehaviour
     void Start()
     {
         //Debug.Log("Movement Script has been loaded");
-        UnityEngine.Debug.Log(JumpState.JUMPDOWN - JumpState.IDLE);
+        currHealth = maxHealth;
+        localScale = transform.localScale;
+        blinkTimer = blinkCycles;
     }
 
     // Update is called every frame
     void Update()
     {
+        // controls
         if (controlEnabled)
         {
             computeLRMovement();
             computeJump();
         }
 
+
+        // player state updates
+        if (gameObject.layer == UNHITABLE_LAYER && isAlive)
+        {
+            spriteBlink();
+        }
+
+
+        // analytics and testing
         velocity = rb.velocity; // displays current velocity of player on unity
         //testTeleport();
-
-        // check if player is alive
-        if (!isAlive)
-        {
-            playerDeath();
-        }
     }
 
     // unity function that runs everytime a collision happends
@@ -101,14 +123,13 @@ public class PlayerControls : MonoBehaviour
     {
         if (col.gameObject.tag == "Enemy")
         {
-            // When player jumps on the enemy
-
             if (jumpState == JumpState.JUMPDOWN && transform.position.y > col.gameObject.transform.position.y)
             {
+                // player is above the enemy
+
                 Enemy enemy = col.gameObject.GetComponent<Enemy>();
                 enemy.ReceivedHit();
                 bounce(bounceVelocity);
-                // TODO: Add jump here
             }
             else
             {
@@ -128,6 +149,7 @@ public class PlayerControls : MonoBehaviour
 
 
     // helper functions
+
     /*
      * giveControl:
      *      player regains control over their character.
@@ -145,6 +167,7 @@ public class PlayerControls : MonoBehaviour
     void makeHitable()
     {
         gameObject.layer = PLAYER_LAYER;
+        spriteRenderer.enabled = true;
     }
 
 
@@ -168,18 +191,22 @@ public class PlayerControls : MonoBehaviour
         if (Input.GetKey(KeyCode.RightArrow))
         {
             isFacingRight = true;
+
             localScale.x = LOCALSCALE_RIGHT;
             transform.localScale = localScale;
             //spriteRenderer.flipX = !isFacingRight;
+
             rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
             animator.SetBool("isRunning", true);
         }
         else if (Input.GetKey(KeyCode.LeftArrow))
         {
             isFacingRight = false;
+
             localScale.x = LOCALSCALE_LEFT;
             transform.localScale = localScale;
             //spriteRenderer.flipX = !isFacingRight;
+
             rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);
             animator.SetBool("isRunning", true);
         }
@@ -198,7 +225,7 @@ public class PlayerControls : MonoBehaviour
         if (Input.GetAxis("Horizontal") == 0)
         {
             rb.velocity = new Vector2(0f, rb.velocity.y);
-            animator.SetBool("isRunning", false);
+            animator.SetBool("isRunning", false); // reset running animation if there is no LR input
         }
     }
 
@@ -208,12 +235,9 @@ public class PlayerControls : MonoBehaviour
      */
     void computeJump()
     {
-        jumpState = getCurrentJumpState();
-
         if (Input.GetButton("Jump") && isGrounded)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-            jumpState = JumpState.JUMPUP;
         }
 
         if (Input.GetButtonUp("Jump") && jumpState == JumpState.INFLIGHT)
@@ -223,9 +247,11 @@ public class PlayerControls : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, 0f);
         }
 
-        
+        jumpState = getCurrentJumpState();
+
 
         animator.SetInteger("jumpState", jumpState - JumpState.IDLE);
+
         if (jumpState == JumpState.IDLE)
         {
             //if (!controlEnabled)
@@ -252,7 +278,11 @@ public class PlayerControls : MonoBehaviour
     JumpState getCurrentJumpState()
     {
         float verticalVel = rb.velocity.y;
-        if (verticalVel > 0.055f)
+        if (verticalVel > jumpForce - 1.5f)
+        {
+            return JumpState.JUMPUP;
+        } 
+        else if (verticalVel > 0.055f)
         {
             return JumpState.INFLIGHT;
         }
@@ -294,7 +324,7 @@ public class PlayerControls : MonoBehaviour
         currHealth--;
         if (currHealth == 0)
         {
-            isAlive = false;
+            playerDeath();
         }
     }
 
@@ -305,11 +335,8 @@ public class PlayerControls : MonoBehaviour
      */
     public void die()
     {
-        controlEnabled = false;
-        while (currHealth > 0)
-        {
-            decrementHealth();
-        }
+        currHealth = 0;
+        playerDeath();
     }
 
     /*
@@ -319,6 +346,9 @@ public class PlayerControls : MonoBehaviour
      */
     void playerDeath()
     {
+        controlEnabled = false;
+        isAlive = false;
+
         rb.velocity *= 0;                     // stop motion
         rb.gravityScale = 0f;                 // stop motion
 
@@ -328,7 +358,6 @@ public class PlayerControls : MonoBehaviour
         vcam.m_LookAt = null;                 // detach camera
         vcam.m_Follow = null;                 // detach camera
 
-        isAlive = true;
         Invoke("respawn", 0.75f);
     }
 
@@ -350,6 +379,7 @@ public class PlayerControls : MonoBehaviour
         vcam.m_Follow = transform;             // attach camera
 
         // enable control after a small fraction of a second to disable jumping midair when respawning
+        isAlive = true;
         Invoke("giveControl", 0.025f);
         makeHitable();                         // reset to player layer
     }
@@ -370,17 +400,17 @@ public class PlayerControls : MonoBehaviour
         {
             // player is to the right of enemy
             rb.velocity = new Vector2(hurtVelocity, hurtVelocity);
-        }
-
-        decrementHealth();
+        }     
 
         animator.SetBool("isHurt", true);
-        animator.SetInteger("jumpState", 0);            // resets animation
-        jumpState = JumpState.IDLE;
+        animator.SetInteger("jumpState", 0); // resets animation
+        jumpState = JumpState.IDLE;          // reset jump state
         controlEnabled = false;
         gameObject.layer = UNHITABLE_LAYER;  // change to unHitable layer to avoid repeated damage
 
-        
+        decrementHealth();
+
+
     }
 
     /*
@@ -398,5 +428,20 @@ public class PlayerControls : MonoBehaviour
         isGrounded = false;
 
         rb.velocity = new Vector2(0, rb.velocity.y);    // resets velocity
+    }
+
+    /*
+     * spriteBlink:
+     *      blink the sprite while the player is unhittable
+     */
+    void spriteBlink()
+    {
+        bool spriteCurrentlyEnabled = spriteRenderer.enabled;
+        blinkTimer -= Time.deltaTime;
+        if (blinkTimer <= 0f)
+        {
+            blinkTimer = blinkCycles;
+            spriteRenderer.enabled = !spriteCurrentlyEnabled;
+        }
     }
 }
