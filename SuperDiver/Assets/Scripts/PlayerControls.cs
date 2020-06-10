@@ -80,8 +80,7 @@ public class PlayerControls : MonoBehaviour
     {
         if (controlEnabled)
         {
-            //computeLRMovement();
-            animator.SetBool("isRunning", true);
+            computeLRMovement();
             computeJump();
         }
 
@@ -210,7 +209,7 @@ public class PlayerControls : MonoBehaviour
     {
         jumpState = getCurrentJumpState();
 
-        if (isGrounded)
+        if (Input.GetButton("Jump") && isGrounded)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             jumpState = JumpState.JUMPUP;
