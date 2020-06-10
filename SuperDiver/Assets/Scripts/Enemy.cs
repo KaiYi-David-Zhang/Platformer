@@ -16,7 +16,7 @@ public class Enemy : MonoBehaviour
     }
 
     // ReceivedHit runs when the player hits the enemy
-    public void ReceivedHit()
+    public void receivedHit()
     {
         UnityEngine.Debug.Log("I got hit");
         anime.SetTrigger("Death");
@@ -25,8 +25,9 @@ public class Enemy : MonoBehaviour
     }
 
 
-    public void Death()
+    public void death()
     {
         Destroy(this.gameObject);
+        
     }
 }

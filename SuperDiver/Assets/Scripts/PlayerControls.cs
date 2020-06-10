@@ -289,7 +289,7 @@ public class PlayerControls : MonoBehaviour
             if(jumpState == JumpState.JUMPDOWN && transform.position.y > col.gameObject.transform.position.y)
             {
                 Enemy enemy = col.gameObject.GetComponent<Enemy>();
-                enemy.ReceivedHit();
+                enemy.receivedHit();
                 // TODO: Add jump here
             }
             else 
