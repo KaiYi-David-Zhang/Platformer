@@ -7,6 +7,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Threading;
 using UnityEngine;
@@ -318,8 +319,15 @@ public class PlayerControls : MonoBehaviour
      */
     void playerDeath()
     {
-        vcam.m_LookAt = null;
-        vcam.m_Follow = null;
+        rb.velocity *= 0;                     // stop motion
+        rb.gravityScale = 0f;                 // stop motion
+
+        animator.SetBool("isHurt", false);    // stop hurt animation
+        animator.SetTrigger("isDead");        // start dead animation
+
+        vcam.m_LookAt = null;                 // detach camera
+        vcam.m_Follow = null;                 // detach camera
+
         isAlive = true;
         Invoke("respawn", 0.75f);
     }
@@ -332,13 +340,14 @@ public class PlayerControls : MonoBehaviour
     {
         currHealth = maxHealth;                // reset health
 
+        rb.gravityScale = 2f;
         animator.SetBool("isHurt", false);     // reset the animation
         animator.SetBool("isRunning", false);  // reset the animation
 
         teleport(spawnPoint.transform.position);
-
-        vcam.m_LookAt = transform;
-        vcam.m_Follow = transform;
+        
+        vcam.m_LookAt = transform;             // attach camera
+        vcam.m_Follow = transform;             // attach camera
 
         // enable control after a small fraction of a second to disable jumping midair when respawning
         Invoke("giveControl", 0.025f);
@@ -363,13 +372,15 @@ public class PlayerControls : MonoBehaviour
             rb.velocity = new Vector2(hurtVelocity, hurtVelocity);
         }
 
+        decrementHealth();
+
         animator.SetBool("isHurt", true);
         animator.SetInteger("jumpState", 0);            // resets animation
         jumpState = JumpState.IDLE;
         controlEnabled = false;
         gameObject.layer = UNHITABLE_LAYER;  // change to unHitable layer to avoid repeated damage
 
-        decrementHealth();
+        
     }
 
     /*
