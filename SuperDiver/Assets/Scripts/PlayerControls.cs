@@ -14,7 +14,7 @@ using UnityEngine;
 public class PlayerControls : MonoBehaviour
 {
     // enum class for the aerial state
-    public enum JumpState { IDLE, JUMPUP, JUMPDOWN };
+    public enum JumpState { IDLE, JUMPUP, INFLIGHT, JUMPDOWN };
 
     // useful constants
     const int PLAYER_LAYER = 8;
@@ -72,6 +72,7 @@ public class PlayerControls : MonoBehaviour
     void Start()
     {
         //Debug.Log("Movement Script has been loaded");
+        UnityEngine.Debug.Log(JumpState.JUMPDOWN - JumpState.IDLE);
     }
 
     // Update is called every frame
@@ -79,7 +80,8 @@ public class PlayerControls : MonoBehaviour
     {
         if (controlEnabled)
         {
-            computeLRMovement();
+            //computeLRMovement();
+            animator.SetBool("isRunning", true);
             computeJump();
         }
 
@@ -192,6 +194,12 @@ public class PlayerControls : MonoBehaviour
             rb.velocity = new Vector2(0f, rb.velocity.y);
             animator.SetBool("isRunning", false);
         }
+
+        if (Input.GetAxis("Horizontal") == 0)
+        {
+            rb.velocity = new Vector2(0f, rb.velocity.y);
+            animator.SetBool("isRunning", false);
+        }
     }
 
     /*
@@ -200,19 +208,22 @@ public class PlayerControls : MonoBehaviour
      */
     void computeJump()
     {
-        if (Input.GetButton("Jump") && isGrounded)
+        jumpState = getCurrentJumpState();
+
+        if (isGrounded)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            jumpState = JumpState.JUMPUP;
         }
 
-        if (Input.GetButtonUp("Jump") && jumpState == JumpState.JUMPUP)
+        if (Input.GetButtonUp("Jump") && jumpState == JumpState.INFLIGHT)
         {
             // stop jump if spacebar is lifted during upwards motion
 
             rb.velocity = new Vector2(rb.velocity.x, 0f);
         }
 
-        jumpState = getCurrentJumpState();
+        
 
         animator.SetInteger("jumpState", jumpState - JumpState.IDLE);
         if (jumpState == JumpState.IDLE)
@@ -241,11 +252,11 @@ public class PlayerControls : MonoBehaviour
     JumpState getCurrentJumpState()
     {
         float verticalVel = rb.velocity.y;
-        if (verticalVel > 0.001f)
+        if (verticalVel > 0.055f)
         {
-            return JumpState.JUMPUP;
+            return JumpState.INFLIGHT;
         }
-        else if (rb.velocity.y < -0.001f)
+        else if (verticalVel < -0.055f)
         {
             return JumpState.JUMPDOWN;
         }
@@ -354,7 +365,8 @@ public class PlayerControls : MonoBehaviour
         }
 
         animator.SetBool("isHurt", true);
-        animator.SetInteger("jumpState", 0);
+        animator.SetInteger("jumpState", 0);            // resets animation
+        jumpState = JumpState.IDLE;
         controlEnabled = false;
         gameObject.layer = UNHITABLE_LAYER;  // change to unHitable layer to avoid repeated damage
 
@@ -373,7 +385,8 @@ public class PlayerControls : MonoBehaviour
         controlEnabled = true; 
         animator.SetBool("isHurt", false);              // resets animation
         animator.SetBool("isRunning", false);           // resets animation
-        
+        isGrounded = false;
+
         rb.velocity = new Vector2(0, rb.velocity.y);    // resets velocity
     }
 }

@@ -16647,7 +16647,7 @@ MonoBehaviour:
   hurtVelocity: 5.56
   bounceVelocity: 6
   jumpState: 0
-  maxHealth: 3
+  maxHealth: 20
   hitStunTime: 0.5
   iframesTime: 1
   velocity: {x: 0, y: 0}
