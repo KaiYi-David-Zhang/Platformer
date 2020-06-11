@@ -11,6 +11,7 @@ using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerControls : MonoBehaviour
 {
@@ -51,7 +52,9 @@ public class PlayerControls : MonoBehaviour
     public GameObject spawnPoint;
     public Cinemachine.CinemachineVirtualCamera vcam;
     public Collider2D collider2D;
-    
+    public float hitStunTime = 0.5f;
+    public float iframesTime = 1.0f;
+    public Text lifeNum;
 
     // private variables
     Vector3 localScale; // for changing direction
@@ -144,6 +147,8 @@ public class PlayerControls : MonoBehaviour
                 }
             }
         }
+
+        lifeNum.text = currHealth.ToString();   // update health to player
     }
 
 
@@ -400,6 +405,35 @@ public class PlayerControls : MonoBehaviour
         isAlive = true;
         Invoke("giveControl", 0.025f);
         makeHitable();                         // reset to player layer
+    }
+
+    // unity function that runs everytime a collision happends
+    // used for collsion check for enemy
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "Enemy")
+        {
+            // When player jumps on the enemy
+
+            if(jumpState == JumpState.JUMPDOWN && transform.position.y > col.gameObject.transform.position.y)
+            {
+                Enemy enemy = col.gameObject.GetComponent<Enemy>();
+                enemy.receivedHit();
+                // TODO: Add jump here
+            }
+            else 
+            {
+                // When an Enemy hits the player
+                //UnityEngine.Debug.Log("Enemy collided with player");
+
+                playerHurt(col);
+                if (isAlive)
+                {
+                    Invoke("exitHurt", hitStunTime);
+                    Invoke("makeHitable", iframesTime);
+                }
+            }
+        }
     }
 
     /*
