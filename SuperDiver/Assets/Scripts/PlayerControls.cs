@@ -52,8 +52,6 @@ public class PlayerControls : MonoBehaviour
     public GameObject spawnPoint;
     public Cinemachine.CinemachineVirtualCamera vcam;
     public Collider2D collider2D;
-    public float hitStunTime = 0.5f;
-    public float iframesTime = 1.0f;
     public Text lifeNum;
 
     // private variables
@@ -131,7 +129,7 @@ public class PlayerControls : MonoBehaviour
                 // player is above the enemy
 
                 Enemy enemy = col.gameObject.GetComponent<Enemy>();
-                enemy.ReceivedHit();
+                enemy.receivedHit();
                 bounce(bounceVelocity);
             }
             else
@@ -407,34 +405,7 @@ public class PlayerControls : MonoBehaviour
         makeHitable();                         // reset to player layer
     }
 
-    // unity function that runs everytime a collision happends
-    // used for collsion check for enemy
-    void OnCollisionEnter2D(Collision2D col)
-    {
-        if (col.gameObject.tag == "Enemy")
-        {
-            // When player jumps on the enemy
-
-            if(jumpState == JumpState.JUMPDOWN && transform.position.y > col.gameObject.transform.position.y)
-            {
-                Enemy enemy = col.gameObject.GetComponent<Enemy>();
-                enemy.receivedHit();
-                // TODO: Add jump here
-            }
-            else 
-            {
-                // When an Enemy hits the player
-                //UnityEngine.Debug.Log("Enemy collided with player");
-
-                playerHurt(col);
-                if (isAlive)
-                {
-                    Invoke("exitHurt", hitStunTime);
-                    Invoke("makeHitable", iframesTime);
-                }
-            }
-        }
-    }
+  
 
     /*
      * playerHurt:
