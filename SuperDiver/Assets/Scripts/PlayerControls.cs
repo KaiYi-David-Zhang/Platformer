@@ -7,14 +7,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Threading;
 using UnityEngine;
 
 public class PlayerControls : MonoBehaviour
 {
-    // enum class for the aerial state
-    public enum JumpState { IDLE, JUMPUP, JUMPDOWN };
+    /*
+     * JumpState:
+     *      enum class to denote character's aerial state:
+     *          -IDLE: the character is on the ground
+     *          -JUMPUP: the character is jumping upwards while on ground
+     *          -INFLIGHT: character is in the air in an upwards motion
+     *                     prevents character from getting stuck on JUMPUP
+     *                     animation when the velocity changes quickly to 0
+     *                     from a positive value
+     *          -JUMPDOWN: character is in a downwards motion while in the air
+     */
+    public enum JumpState { IDLE, JUMPUP, INFLIGHT, JUMPDOWN };
 
     // useful constants
     const int PLAYER_LAYER = 8;
@@ -23,39 +34,51 @@ public class PlayerControls : MonoBehaviour
     const int LOCALSCALE_LEFT = -1;
 
     // public variables
-    public float groundSpeed = 10f;
+    public float groundSpeed = 6f;
     public float glideSpeed = 6f;
-    public float jumpForce = 10f;
+    public float jumpForce = 12f;
     public float hurtVelocity = 4f;
-    public Vector2 velocity;          // current velocity of the player
+    public float bounceVelocity = 6f;
+    public float blinkCycles = 0.1f;
+
     public JumpState jumpState = JumpState.IDLE;
     public int maxHealth = 1;
+    public float hitStunTime = 0.5f;
+    public float iframesTime = 1.0f;
+
+    public Vector2 velocity;          // current velocity of the player
+    
     public GameObject spawnPoint;
     public Cinemachine.CinemachineVirtualCamera vcam;
     public Collider2D collider2D;
-    public float hitStunTime = 0.5f;
-    public float iframesTime = 1.0f;
+    
 
     // private variables
     Vector3 localScale; // for changing direction
     Rigidbody2D rb;
     Animator animator;
     SpriteRenderer spriteRenderer;
+
     bool isFacingRight = true;
     bool isGrounded = false;
-    //bool isInControl = true;    // determinds if the player can have left and right movement used during interaction with enemies
-    float moveSpeed;
     bool isAlive = true;
-    bool controlEnabled = true; // determinds if the player have controls at all used during death and respawns
+    bool controlEnabled = true; // determines if the player have controls at all
+                                // used during death and respawns
+    //bool isInControl = true;  // determines if the player can have left and right movement
+                                //used during interaction with enemies
+
     int currHealth;
+
+    float moveSpeed;
+    float blinkTimer;
 
 
 
     // Unity engine basic functions
+    // Awake is called when the script is loaded, regardless of it being enabled or not
     void Awake()
     {
-        currHealth = maxHealth;
-        localScale = transform.localScale;
+        
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
@@ -66,25 +89,103 @@ public class PlayerControls : MonoBehaviour
     void Start()
     {
         //Debug.Log("Movement Script has been loaded");
+        currHealth = maxHealth;
+        localScale = transform.localScale;
+        blinkTimer = blinkCycles;
     }
 
     // Update is called every frame
     void Update()
     {
+        // controls
         if (controlEnabled)
         {
             computeLRMovement();
             computeJump();
         }
-        
+
+
+        // player state updates
+        if (gameObject.layer == UNHITABLE_LAYER && isAlive)
+        {
+            spriteBlink();
+        }
+
+
+        // analytics and testing
         velocity = rb.velocity; // displays current velocity of player on unity
         //testTeleport();
+    }
 
-        // check if player is alive
-        if (!isAlive)
+    // unity function that runs everytime a collision happends
+    // used for collsion check for enemy
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "Enemy")
         {
-            playerDeath();
+            if (jumpState == JumpState.JUMPDOWN && transform.position.y > col.gameObject.transform.position.y)
+            {
+                // player is above the enemy
+
+                Enemy enemy = col.gameObject.GetComponent<Enemy>();
+                enemy.ReceivedHit();
+                bounce(bounceVelocity);
+            }
+            else
+            {
+                // When an Enemy hits the player
+                //UnityEngine.Debug.Log("Enemy collided with player");
+
+                playerHurt(col);
+                if (isAlive)
+                {
+                    Invoke("exitHurt", hitStunTime);
+                    Invoke("makeHitable", iframesTime);
+                }
+            }
         }
+    }
+
+
+
+    // helper functions
+
+    /* 
+     * takeControl:
+     *      strip player of any control over their character
+     */
+    public void takeControl()
+    {
+        controlEnabled = false;
+    }
+
+    /*
+     * giveControl:
+     *      player regains control over their character.
+     *      Implemented so that it can be "invoked"
+     */
+    public void giveControl()
+    {
+        controlEnabled = true;
+    }
+
+    /*
+     * makeHitable:
+     *      player's layer is set back to player layer, and becomes hitable again
+     */
+    public void makeHitable()
+    {
+        gameObject.layer = PLAYER_LAYER;
+        spriteRenderer.enabled = true;
+    }
+
+    /*
+     * makeUnhitable:
+     *      player's layer is set to unHitable
+     */
+    public void makeUnhitable()
+    {
+        gameObject.layer = UNHITABLE_LAYER;
     }
 
 
@@ -108,18 +209,22 @@ public class PlayerControls : MonoBehaviour
         if (Input.GetKey(KeyCode.RightArrow))
         {
             isFacingRight = true;
+
             localScale.x = LOCALSCALE_RIGHT;
             transform.localScale = localScale;
             //spriteRenderer.flipX = !isFacingRight;
+
             rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
             animator.SetBool("isRunning", true);
         }
         else if (Input.GetKey(KeyCode.LeftArrow))
         {
             isFacingRight = false;
+
             localScale.x = LOCALSCALE_LEFT;
             transform.localScale = localScale;
             //spriteRenderer.flipX = !isFacingRight;
+
             rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);
             animator.SetBool("isRunning", true);
         }
@@ -134,6 +239,12 @@ public class PlayerControls : MonoBehaviour
             rb.velocity = new Vector2(0f, rb.velocity.y);
             animator.SetBool("isRunning", false);
         }
+
+        if (Input.GetAxis("Horizontal") == 0)
+        {
+            rb.velocity = new Vector2(0f, rb.velocity.y);
+            animator.SetBool("isRunning", false); // reset running animation if there is no LR input
+        }
     }
 
     /*
@@ -147,7 +258,7 @@ public class PlayerControls : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }
 
-        if (Input.GetButtonUp("Jump") && jumpState == JumpState.JUMPUP)
+        if (Input.GetButtonUp("Jump") && jumpState == JumpState.INFLIGHT)
         {
             // stop jump if spacebar is lifted during upwards motion
 
@@ -156,7 +267,9 @@ public class PlayerControls : MonoBehaviour
 
         jumpState = getCurrentJumpState();
 
+
         animator.SetInteger("jumpState", jumpState - JumpState.IDLE);
+
         if (jumpState == JumpState.IDLE)
         {
             //if (!controlEnabled)
@@ -183,11 +296,15 @@ public class PlayerControls : MonoBehaviour
     JumpState getCurrentJumpState()
     {
         float verticalVel = rb.velocity.y;
-        if (verticalVel > 0.001f)
+        if (verticalVel > jumpForce - 1.5f)
         {
             return JumpState.JUMPUP;
+        } 
+        else if (verticalVel > 0.055f)
+        {
+            return JumpState.INFLIGHT;
         }
-        else if (rb.velocity.y < -0.001f)
+        else if (verticalVel < -0.055f)
         {
             return JumpState.JUMPDOWN;
         }
@@ -206,17 +323,16 @@ public class PlayerControls : MonoBehaviour
         rb.velocity *= 0;
     }
 
-    void testTeleport()
+    void bounce(float bounceVelocity)
     {
-        if (Input.GetKey(KeyCode.DownArrow))
-        {
-            teleport(spawnPoint.transform.position);
-        }
+        rb.velocity = new Vector2(rb.velocity.x, bounceVelocity);
     }
 
 
     
     // health related methods
+
+
     /*
      * decrementHealth:
      *      decrements the player health by 1
@@ -226,7 +342,7 @@ public class PlayerControls : MonoBehaviour
         currHealth--;
         if (currHealth == 0)
         {
-            isAlive = false;
+            playerDeath();
         }
     }
 
@@ -237,11 +353,8 @@ public class PlayerControls : MonoBehaviour
      */
     public void die()
     {
-        controlEnabled = false;
-        while (currHealth > 0)
-        {
-            decrementHealth();
-        }
+        currHealth = 0;
+        playerDeath();
     }
 
     /*
@@ -251,9 +364,18 @@ public class PlayerControls : MonoBehaviour
      */
     void playerDeath()
     {
-        vcam.m_LookAt = null;
-        vcam.m_Follow = null;
-        isAlive = true;
+        controlEnabled = false;
+        isAlive = false;
+
+        rb.velocity *= 0;                     // stop motion
+        rb.gravityScale = 0f;                 // stop motion
+
+        animator.SetBool("isHurt", false);    // stop hurt animation
+        animator.SetTrigger("isDead");        // start dead animation
+
+        vcam.m_LookAt = null;                 // detach camera
+        vcam.m_Follow = null;                 // detach camera
+
         Invoke("respawn", 0.75f);
     }
 
@@ -265,46 +387,19 @@ public class PlayerControls : MonoBehaviour
     {
         currHealth = maxHealth;                // reset health
 
+        rb.gravityScale = 2f;
         animator.SetBool("isHurt", false);     // reset the animation
         animator.SetBool("isRunning", false);  // reset the animation
 
         teleport(spawnPoint.transform.position);
-
-        vcam.m_LookAt = transform;
-        vcam.m_Follow = transform;
+        
+        vcam.m_LookAt = transform;             // attach camera
+        vcam.m_Follow = transform;             // attach camera
 
         // enable control after a small fraction of a second to disable jumping midair when respawning
+        isAlive = true;
         Invoke("giveControl", 0.025f);
         makeHitable();                         // reset to player layer
-    }
-
-    // unity function that runs everytime a collision happends
-    // used for collsion check for enemy
-    void OnCollisionEnter2D(Collision2D col)
-    {
-        if (col.gameObject.tag == "Enemy")
-        {
-            // When player jumps on the enemy
-
-            if(jumpState == JumpState.JUMPDOWN && transform.position.y > col.gameObject.transform.position.y)
-            {
-                Enemy enemy = col.gameObject.GetComponent<Enemy>();
-                enemy.ReceivedHit();
-                // TODO: Add jump here
-            }
-            else 
-            {
-                // When an Enemy hits the player
-                //UnityEngine.Debug.Log("Enemy collided with player");
-
-                playerHurt(col);
-                if (isAlive)
-                {
-                    Invoke("exitHurt", hitStunTime);
-                    Invoke("makeHitable", iframesTime);
-                }
-            }
-        }
     }
 
     /*
@@ -323,34 +418,48 @@ public class PlayerControls : MonoBehaviour
         {
             // player is to the right of enemy
             rb.velocity = new Vector2(hurtVelocity, hurtVelocity);
-        }
+        }     
 
         animator.SetBool("isHurt", true);
-        animator.SetInteger("jumpState", 0);
+        animator.SetInteger("jumpState", 0); // resets animation
+        jumpState = JumpState.IDLE;          // reset jump state
         controlEnabled = false;
         gameObject.layer = UNHITABLE_LAYER;  // change to unHitable layer to avoid repeated damage
 
         decrementHealth();
+
+
     }
 
+    /*
+     * exitHurt:
+     *      exit out of the hurt state:
+     *          reset the animator
+     *          reset the velocity
+     *          regain control
+     */
     void exitHurt()
     {
-        controlEnabled = true;
-        animator.SetBool("isHurt", false);
-        animator.SetBool("isRunning", false);
-        
+        controlEnabled = true; 
+        animator.SetBool("isHurt", false);              // resets animation
+        animator.SetBool("isRunning", false);           // resets animation
+        isGrounded = false;
+
         rb.velocity = new Vector2(0, rb.velocity.y);    // resets velocity
     }
 
-    void giveControl()
+    /*
+     * spriteBlink:
+     *      blink the sprite while the player is unhittable
+     */
+    void spriteBlink()
     {
-        controlEnabled = true;
+        bool spriteCurrentlyEnabled = spriteRenderer.enabled;
+        blinkTimer -= Time.deltaTime;
+        if (blinkTimer <= 0f)
+        {
+            blinkTimer = blinkCycles;
+            spriteRenderer.enabled = !spriteCurrentlyEnabled;
+        }
     }
-
-    void makeHitable()
-    {
-        gameObject.layer = PLAYER_LAYER;
-    }
-
-
 }
