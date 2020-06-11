@@ -150,12 +150,21 @@ public class PlayerControls : MonoBehaviour
 
     // helper functions
 
+    /* 
+     * takeControl:
+     *      strip player of any control over their character
+     */
+    public void takeControl()
+    {
+        controlEnabled = false;
+    }
+
     /*
      * giveControl:
      *      player regains control over their character.
      *      Implemented so that it can be "invoked"
      */
-    void giveControl()
+    public void giveControl()
     {
         controlEnabled = true;
     }
@@ -164,10 +173,19 @@ public class PlayerControls : MonoBehaviour
      * makeHitable:
      *      player's layer is set back to player layer, and becomes hitable again
      */
-    void makeHitable()
+    public void makeHitable()
     {
         gameObject.layer = PLAYER_LAYER;
         spriteRenderer.enabled = true;
+    }
+
+    /*
+     * makeUnhitable:
+     *      player's layer is set to unHitable
+     */
+    public void makeUnhitable()
+    {
+        gameObject.layer = UNHITABLE_LAYER;
     }
 
 
