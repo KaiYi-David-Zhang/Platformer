@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerControls : MonoBehaviour
 {
@@ -35,6 +36,7 @@ public class PlayerControls : MonoBehaviour
     public Collider2D collider2D;
     public float hitStunTime = 0.5f;
     public float iframesTime = 1.0f;
+    public Text lifeNum;
 
     // private variables
     Vector3 localScale; // for changing direction
@@ -85,6 +87,8 @@ public class PlayerControls : MonoBehaviour
         {
             playerDeath();
         }
+
+        lifeNum.text = currHealth.ToString();   // update health to player
     }
 
 
