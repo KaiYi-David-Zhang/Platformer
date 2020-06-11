@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 79893605}
   - component: {fileID: 79893607}
   - component: {fileID: 79893606}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: lifeNum
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,7 +155,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -431.7, y: 231.9}
+  m_AnchoredPosition: {x: -172.70004, y: 149.89998}
   m_SizeDelta: {x: 181.67532, y: 48.578857}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &79893606
@@ -216,7 +216,7 @@ GameObject:
   - component: {fileID: 350799905}
   - component: {fileID: 350799907}
   - component: {fileID: 350799906}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: times
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -239,7 +239,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -530, y: 229}
+  m_AnchoredPosition: {x: -271.00003, y: 146.99998}
   m_SizeDelta: {x: 29.94812, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &350799906
@@ -16471,7 +16471,7 @@ GameObject:
   - component: {fileID: 487127423}
   - component: {fileID: 487127422}
   - component: {fileID: 551732920}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: transitionCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16680,7 +16680,7 @@ GameObject:
   - component: {fileID: 619218867}
   - component: {fileID: 619218866}
   - component: {fileID: 619218865}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17185,7 +17185,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 953149908}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: playerUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17878,7 +17878,7 @@ GameObject:
   - component: {fileID: 1672796170}
   - component: {fileID: 1672796172}
   - component: {fileID: 1672796171}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: playerImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17901,7 +17901,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -570, y: 253}
+  m_AnchoredPosition: {x: -311, y: 171}
   m_SizeDelta: {x: 73.94742, y: 73.94742}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1672796171
@@ -17953,7 +17953,7 @@ GameObject:
   - component: {fileID: 1690576058}
   - component: {fileID: 1690576057}
   - component: {fileID: 1690576056}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: playerNumber
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18030,8 +18030,8 @@ Canvas:
   m_GameObject: {fileID: 1690576054}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 1294377521}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -18039,7 +18039,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: -919303397
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!1 &1771774780
@@ -18203,6 +18203,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SortingLayer
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2126989704018285843, guid: 22a0dd37f63abfb4aa54deeec35ccd3d,
+        type: 3}
+      propertyPath: m_BodyType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2126989704018285843, guid: 22a0dd37f63abfb4aa54deeec35ccd3d,
+        type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2126989704018285843, guid: 22a0dd37f63abfb4aa54deeec35ccd3d,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22a0dd37f63abfb4aa54deeec35ccd3d, type: 3}
@@ -20276,6 +20291,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: frog1
       objectReference: {fileID: 0}
+    - target: {fileID: 2126989704018285843, guid: 22a0dd37f63abfb4aa54deeec35ccd3d,
+        type: 3}
+      propertyPath: m_BodyType
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22a0dd37f63abfb4aa54deeec35ccd3d, type: 3}
 --- !u!1001 &4215110293262302148
@@ -20299,6 +20319,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4215110292877367165, guid: eb122349a43b24a4c883233f47120227,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4215110294507622807, guid: eb122349a43b24a4c883233f47120227,
         type: 3}
