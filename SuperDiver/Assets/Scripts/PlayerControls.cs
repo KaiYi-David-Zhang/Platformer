@@ -257,8 +257,8 @@ public class PlayerControls : MonoBehaviour
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }
-
-        if (Input.GetButtonUp("Jump") && jumpState == JumpState.INFLIGHT)
+        if (Input.GetButtonUp("Jump") && (jumpState == JumpState.INFLIGHT 
+                                        || jumpState == JumpState.JUMPUP))
         {
             // stop jump if spacebar is lifted during upwards motion
 
