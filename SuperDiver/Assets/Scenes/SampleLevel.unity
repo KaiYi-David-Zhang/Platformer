@@ -17028,8 +17028,6 @@ MonoBehaviour:
   spawnPoint: {fileID: 722436560}
   vcam: {fileID: 573178254}
   collider2D: {fileID: 835536410}
-  hitStunTime: 0.5
-  iframesTime: 1
   lifeNum: {fileID: 79893606}
 --- !u!95 &835536412
 Animator:
