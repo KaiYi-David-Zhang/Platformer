@@ -2,21 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FrogMovement : MonoBehaviour
+public class FrogMovement : Enemy
 {
     public float jumpTime = 4f;
     float jumpTimer = 0f; // in seconds
     public float jumpForce = 6f;
-    Rigidbody2D rb;
     Vector3 localScale;
-    Animator anime;
 
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         localScale = transform.localScale;
-        rb = GetComponent<Rigidbody2D>();
-        anime = GetComponent<Animator>();
         jumpTimer = jumpTime;
     }
 

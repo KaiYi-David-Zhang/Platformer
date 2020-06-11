@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyHorizontalMovement : MonoBehaviour
+public class EnemyHorizontalMovement : Enemy
 {
     public float leftDis, rightDis;
     public float moveSpeed = 3f;
@@ -10,14 +10,13 @@ public class EnemyHorizontalMovement : MonoBehaviour
     Vector3 localScale;
     SpriteRenderer spriteRenderer;
     bool moveL = true;
-    Rigidbody2D rb;
 
 
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         localScale = transform.localScale;
-        rb = GetComponent<Rigidbody2D> ();
         spriteRenderer = GetComponent<SpriteRenderer>();
         startingPos = transform.position.x;
     }

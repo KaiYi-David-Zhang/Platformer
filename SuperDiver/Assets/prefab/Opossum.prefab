@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6351717910760003318}
   m_Layer: 9
   m_Name: Opossum
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -144,8 +144,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a591c063282cdb4d9037a5ada6ce45a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftWP: {fileID: 0}
-  RightWP: {fileID: 0}
+  leftDis: 0
+  rightDis: 0
   moveSpeed: 3
 --- !u!95 &6351717910760003318
 Animator:
