@@ -155,8 +155,7 @@ MonoBehaviour:
   hitStunTime: 0.5
   iframesTime: 1.5
   velocity: {x: 0, y: 0}
-  spawnPoint: {fileID: 4051211185019102012, guid: d81e75c082e5d04419d767e76545e8b5,
-    type: 3}
+  spawnPoint: {fileID: 0}
   vcam: {fileID: 3595122409201865661, guid: c0ec166a0bf0845458f2a287e1a55033, type: 3}
   collider2D: {fileID: 1315824407202928215}
   lifeNum: {fileID: 0}
