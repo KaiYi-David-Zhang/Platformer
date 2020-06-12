@@ -326,6 +326,10 @@ public class PlayerControls : MonoBehaviour
         rb.velocity *= 0;
     }
 
+    /*
+     * bounce:
+     *      player bounces after stepping on the enemy
+     */
     void bounce(float bounceVelocity)
     {
         rb.velocity = new Vector2(rb.velocity.x, bounceVelocity);
@@ -393,6 +397,9 @@ public class PlayerControls : MonoBehaviour
         rb.gravityScale = 2f;
         animator.SetBool("isHurt", false);     // reset the animation
         animator.SetBool("isRunning", false);  // reset the animation
+
+        var allEnemies = GameObject.Find("Enemies").GetComponent<Enemies>();
+        allEnemies.respawnEnemies();
 
         teleport(spawnPoint.transform.position);
         

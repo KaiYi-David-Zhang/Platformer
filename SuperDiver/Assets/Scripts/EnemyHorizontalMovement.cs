@@ -66,4 +66,10 @@ public class EnemyHorizontalMovement : Enemy
         rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);
 
     }
+
+
+    protected override void modifyConstraints()
+    {
+        rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
+    }
 }
