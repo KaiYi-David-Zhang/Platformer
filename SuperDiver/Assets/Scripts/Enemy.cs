@@ -30,4 +30,13 @@ public class Enemy : MonoBehaviour
         Destroy(this.gameObject);
         
     }
+
+
+    void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.tag == "Player")
+        {
+            rb.velocity *= 0;
+        }
+    }
 }
