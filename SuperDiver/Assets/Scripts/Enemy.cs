@@ -27,7 +27,8 @@ public class Enemy : MonoBehaviour
 
     public void death()
     {
-        Destroy(this.gameObject);
-        
+        this.gameObject.SetActive(false);
+        rb.constraints = RigidbodyConstraints2D.None;
+        gameObject.layer = 9;
     }
 }
