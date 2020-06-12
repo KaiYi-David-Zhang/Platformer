@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FrogMovement : Enemy
+public class EnemyVerticalMovement : Enemy
 {
     public float jumpTime = 4f;
     float jumpTimer = 0f; // in seconds
@@ -38,4 +38,8 @@ public class FrogMovement : Enemy
 
     }
 
+    protected override void modifyConstraints()
+    {
+        rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
+    }
 }
