@@ -24,19 +24,26 @@ public class EnemyHorizontalMovement : Enemy
     // Update is called once per frame
     void Update()
     {
-        if(transform.position.x > startingPos + rightDis)
+        if (leftDis != 0 || rightDis != 0)
         {
-            moveL = true;
-        }
-        if(transform.position.x < startingPos - leftDis) {
-            moveL = false;
-        }
 
-        if (moveL) {
-            moveLeft();
-        }
-        else {
-            moveRight();
+            if (transform.position.x > startingPos + rightDis)
+            {
+                moveL = true;
+            }
+            if (transform.position.x < startingPos - leftDis)
+            {
+                moveL = false;
+            }
+
+            if (moveL)
+            {
+                moveLeft();
+            }
+            else
+            {
+                moveRight();
+            }
         }
 
     }
