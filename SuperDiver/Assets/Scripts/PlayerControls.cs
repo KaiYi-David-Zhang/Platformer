@@ -398,8 +398,12 @@ public class PlayerControls : MonoBehaviour
         animator.SetBool("isHurt", false);     // reset the animation
         animator.SetBool("isRunning", false);  // reset the animation
 
-        var allEnemies = GameObject.Find("Enemies").GetComponent<Enemies>();
-        allEnemies.respawnEnemies();
+        var enemies = GameObject.Find("Enemies");
+        if (enemies != null)
+        {
+            var allEnemies = enemies.GetComponent<Enemies>();
+            allEnemies.respawnEnemies();
+        }
 
         teleport(spawnPoint.transform.position);
         
