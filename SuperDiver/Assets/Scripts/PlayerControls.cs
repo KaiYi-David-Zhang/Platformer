@@ -256,6 +256,8 @@ public class PlayerControls : MonoBehaviour
      */
     void computeJump()
     {
+        jumpState = getCurrentJumpState();
+
         if (Input.GetButton("Jump") && isGrounded)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
@@ -267,8 +269,6 @@ public class PlayerControls : MonoBehaviour
 
             rb.velocity = new Vector2(rb.velocity.x, 0f);
         }
-
-        jumpState = getCurrentJumpState();
 
 
         animator.SetInteger("jumpState", jumpState - JumpState.IDLE);
@@ -299,7 +299,7 @@ public class PlayerControls : MonoBehaviour
     JumpState getCurrentJumpState()
     {
         float verticalVel = rb.velocity.y;
-        if (verticalVel > jumpForce - 1.5f)
+        if (verticalVel > jumpForce - 1.0f)
         {
             return JumpState.JUMPUP;
         } 
