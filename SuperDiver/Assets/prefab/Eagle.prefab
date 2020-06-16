@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4215110292877367164}
   - component: {fileID: 4215110292877367155}
   - component: {fileID: 4215110292877367166}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Eagle
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a591c063282cdb4d9037a5ada6ce45a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  originalLoc: {x: 0, y: 0, z: 0}
   leftDis: 4
   rightDis: 4
   moveSpeed: 3

@@ -478,4 +478,9 @@ public class PlayerControls : MonoBehaviour
             spriteRenderer.enabled = !spriteCurrentlyEnabled;
         }
     }
+
+    void logAmIdle()
+    {
+        UnityEngine.Debug.Log("I am idle");
+    }
 }
