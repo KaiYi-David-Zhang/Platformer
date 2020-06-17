@@ -408,6 +408,7 @@ public class PlayerControls : MonoBehaviour
         var enemies = GameObject.Find("Enemies");
         if (enemies != null)
         {
+            
             var allEnemies = enemies.GetComponent<Enemies>();
             allEnemies.respawnEnemies();
         }
