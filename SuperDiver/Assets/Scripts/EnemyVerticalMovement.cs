@@ -42,4 +42,15 @@ public class EnemyVerticalMovement : Enemy
     {
         rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
     }
+
+    public override void respawn()
+    {
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        gameObject.layer = 9;
+        gameObject.SetActive(true);
+        rb.position = originalLoc;
+        rb.velocity *= 0;
+        anime.SetTrigger("resetAnimation");
+        modifyConstraints();
+    }
 }
