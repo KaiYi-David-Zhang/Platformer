@@ -1381,7 +1381,7 @@ PrefabInstance:
         type: 3}
       propertyPath: spawnPoint
       value: 
-      objectReference: {fileID: 275382727}
+      objectReference: {fileID: 1637782768}
     - target: {fileID: 1315824407202928214, guid: dc88afd1c1d3e3e46a4c7cf00a16dd2f,
         type: 3}
       propertyPath: lifeNum
@@ -90714,6 +90714,36 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 938714109}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1637782768
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1637782769}
+  m_Layer: 0
+  m_Name: TempSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1637782769
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1637782768}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -37.18, y: 33.02, z: -476.19806}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1664002314 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4215110294507622807, guid: eb122349a43b24a4c883233f47120227,

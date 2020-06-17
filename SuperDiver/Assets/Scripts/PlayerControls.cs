@@ -122,7 +122,7 @@ public class PlayerControls : MonoBehaviour
     // used for collsion check for enemy
     void OnCollisionEnter2D(Collision2D col)
     {
-        if (col.gameObject.tag == "Enemy")
+        if (col.gameObject.tag == "Enemy" && isAlive)
         {
             if (jumpState == JumpState.JUMPDOWN && transform.position.y > col.gameObject.transform.position.y)
             {
@@ -145,6 +145,13 @@ public class PlayerControls : MonoBehaviour
                 }
             }
         }
+
+        /*
+        if (col.gameObject.tag == "Enemy")
+        {
+            UnityEngine.Debug.Log("I collided with: " + col.gameObject.name);
+        }
+        */
 
         lifeNum.text = currHealth.ToString();   // update health to player
     }
@@ -434,13 +441,16 @@ public class PlayerControls : MonoBehaviour
         {
             // player is to the right of enemy
             rb.velocity = new Vector2(hurtVelocity, hurtVelocity);
-        }     
+        }
 
+        gameObject.layer = UNHITABLE_LAYER;  // change to unHitable layer to avoid repeated damage
         animator.SetBool("isHurt", true);
         animator.SetInteger("jumpState", 0); // resets animation
         jumpState = JumpState.IDLE;          // reset jump state
         controlEnabled = false;
-        gameObject.layer = UNHITABLE_LAYER;  // change to unHitable layer to avoid repeated damage
+        
+
+        //UnityEngine.Debug.Log("I was hurt by: " + enemy.gameObject.name);
 
         decrementHealth();
 
@@ -482,5 +492,10 @@ public class PlayerControls : MonoBehaviour
     void logAmIdle()
     {
         UnityEngine.Debug.Log("I am idle");
+    }
+
+    void logDeathAnimationCalled()
+    {
+        UnityEngine.Debug.Log("I am dead");
     }
 }
