@@ -72,4 +72,17 @@ public class EnemyHorizontalMovement : Enemy
     {
         rb.constraints = RigidbodyConstraints2D.FreezePositionY | RigidbodyConstraints2D.FreezeRotation;
     }
+
+    public override void respawn()
+    {
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        gameObject.layer = 9;
+        gameObject.SetActive(true);
+        rb.position = originalLoc;
+        rb.velocity *= 0;
+        localScale.x = 1;
+        transform.localScale = localScale;
+        moveL = true;
+        modifyConstraints();
+    }
 }

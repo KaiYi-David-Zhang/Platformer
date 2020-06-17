@@ -31,7 +31,7 @@ public class Enemy : MonoBehaviour
         this.gameObject.SetActive(false);
     }
 
-    public void respawn()
+    public virtual void respawn()
     {
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         gameObject.layer = 9;
