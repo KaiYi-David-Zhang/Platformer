@@ -309,7 +309,7 @@ PrefabInstance:
     - target: {fileID: 7846677041877625970, guid: 141cfb3c3e751274fae870a444ee3134,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7846677041877625973, guid: 141cfb3c3e751274fae870a444ee3134,
         type: 3}
@@ -71315,7 +71315,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 23.83664, y: 1.624073}
