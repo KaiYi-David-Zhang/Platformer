@@ -82375,7 +82375,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 572f5677fe3e6f6429a91b67c3e4b81e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: Ending
+  sceneName: Temple
   animator: {fileID: 138176394}
 --- !u!1001 &450081102
 PrefabInstance:
@@ -82657,7 +82657,7 @@ PrefabInstance:
     - target: {fileID: 7846677041877625970, guid: 141cfb3c3e751274fae870a444ee3134,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7846677041877625973, guid: 141cfb3c3e751274fae870a444ee3134,
         type: 3}
@@ -83619,7 +83619,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1547014550}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -11.9931965, y: -0.015395412, z: -10}
+  m_LocalPosition: {x: -16.52, y: -0.01, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
