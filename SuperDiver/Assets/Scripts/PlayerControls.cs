@@ -306,7 +306,7 @@ public class PlayerControls : MonoBehaviour
     JumpState getCurrentJumpState()
     {
         float verticalVel = rb.velocity.y;
-        if (verticalVel > jumpForce - 1.0f)
+        if (verticalVel > jumpForce - 1.2f)
         {
             return JumpState.JUMPUP;
         } 
