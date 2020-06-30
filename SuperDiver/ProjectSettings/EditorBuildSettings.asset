@@ -6,11 +6,11 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Grassland.unity
-    guid: b1cb5182eda42c34798b9bc42121522a
-  - enabled: 1
     path: Assets/Scenes/EasierLevel.unity
     guid: 91ee741d7d21bd3438fd87771fc76e1c
+  - enabled: 1
+    path: Assets/Scenes/Grassland.unity
+    guid: b1cb5182eda42c34798b9bc42121522a
   - enabled: 1
     path: Assets/Scenes/Temple.unity
     guid: 432664cf09496394c9749f8cd9b8893e
